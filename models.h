@@ -15,11 +15,20 @@
  MARK: - RAW DATA
  */
 struct Packet {
+	union {
+		struct {
+			PACKET_INDEX_TYPE index;
+			PACKET_ID_TYPE packetID;
+			char completion;
+			char data[PACKET_SIZE];
+		};
 
-	PACKET_INDEX_TYPE index;
-	PACKET_ID_TYPE packetID;
-	char completion;
-	char data[PACKET_SIZE];
+		struct {
+			char rawdata[PACKET_SIZE];
+		};
+	};
+
+	
 	
 	//not a part of the payload
 	int size;

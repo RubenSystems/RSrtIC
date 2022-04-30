@@ -5,7 +5,7 @@
 //  Created by Ruben Ticehurst-James on 11/04/2022.
 //
 
-#include "models.h"
+#include "../models.h"
 
 
 #include <stdlib.h>
@@ -52,17 +52,6 @@ struct Socket createSocket(){
 	}
 	return sock;
 };
-
-
-
-
-void transmit(struct Socket socket, struct Computer computer, const char * message) {
-	long numbytes;
-	if ((numbytes = (int)sendto(socket.fd, message, strlen(message), 0, (struct sockaddr *)&computer.address, sizeof(struct sockaddr))) < 0) {
-		perror("sendto");
-		exit(1);
-	}
-}
 
 
 
