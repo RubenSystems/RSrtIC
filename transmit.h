@@ -13,7 +13,7 @@
 
 int PACKET_ID_COUNTER;
 
-void transmitPacket(struct Socket, struct Computer, struct Packet);
+void transmitPacket(struct Socket *, struct Computer *, struct Packet);
 
 
-void transmit(struct Socket, struct Computer, const char *, int);
+void transmit(struct Socket *, struct Computer *, const char *, int);

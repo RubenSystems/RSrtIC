@@ -19,15 +19,51 @@
 #include <stdio.h>
 
 
+void terminate(void * object) {
+	free(object);
+	object = 0;
+}
 
-struct Computer createComputer(const char * ip, int port) {
-	struct Computer computer;
-	computer.address.sin_family = AF_INET;
-	computer.address.sin_port = htons(port);
-	computer.address.sin_addr = *((struct in_addr *)gethostbyname(ip)->h_addr);
-	memset(&(computer.address.sin_zero), '\0', 8);
+/**
+ * danger functions should be freed to avoid memory leaks
+ */
+
+struct Computer * createComputer(const char * ip, int port) {
+	struct Computer* computer = (struct Computer *)malloc(sizeof(struct Computer));
+	computer->address.sin_family = AF_INET;
+	computer->address.sin_port = htons(port);
+	computer->address.sin_addr = *((struct in_addr *)gethostbyname(ip)->h_addr);
+	memset(&(computer->address.sin_zero), '\0', 8);
 	return computer;
 }
+
+
+struct Computer * thisComputer(int port) {
+	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
+	computer->address.sin_family = AF_INET;
+	computer->address.sin_port = htons(port);
+	computer->address.sin_addr.s_addr = INADDR_ANY;
+	memset(&(computer->address.sin_zero), '\0', 8);
+	return computer;
+}
+
+struct Computer * anyComputer() {
+	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
+	memset(&computer->address, 0, sizeof(computer->address));
+	return computer;
+}
+
+
+struct Socket * createSocket(){
+	struct Socket * sock = (struct Socket *)malloc(sizeof(struct Socket));
+	if ((sock->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+		perror("socket");
+		exit(1);
+	}
+	return sock;
+};
+
+
 
 void createFrameInPlace(struct Frame * frame, struct Packet * packet) {
 	frame->packetno = packet->completion == 1 ? packet->index : -1;
@@ -43,15 +79,15 @@ struct Pool createPool() {
 	return pool;
 }
 
+void bindSocketToComputer(struct Socket * socket, struct Computer * computer) {
+	if ( bind(socket->fd, (const struct sockaddr *)&computer->address, sizeof(computer->address)) < 0 ) {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+} 
 
-struct Socket createSocket(){
-	struct Socket sock;
-	if ((sock.fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-		perror("socket");
-		exit(1);
-	}
-	return sock;
-};
+
+
 
 
 

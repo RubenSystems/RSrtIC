@@ -7,15 +7,15 @@
 
 int PACKET_ID_COUNTER = 0;
 
-void transmitPacket(struct Socket socket, struct Computer computer, struct Packet packet) {
+void transmitPacket(struct Socket * socket, struct Computer * computer, struct Packet packet) {
 	long numbytes;
-	if ((numbytes = (int)sendto(socket.fd, packet.rawdata, packet.size, 0, (struct sockaddr *)&computer.address, sizeof(struct sockaddr))) < 0) {
+	if ((numbytes = (int)sendto(socket->fd, packet.rawdata, packet.size, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
 		perror("sendto");
 		exit(1);
 	}
 }
 
-void transmit(struct Socket socket, struct Computer computer, const char * data, int size) {
+void transmit(struct Socket * socket, struct Computer * computer, const char * data, int size) {
 	/*
 		Add size checks here
 	*/

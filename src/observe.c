@@ -16,16 +16,16 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <poll.h>
 
 
-void observe(struct Socket socket, struct Computer computer, const void * context, void (*completion)(const void * context, const char *, int) ) {
+void observe(struct Socket * socket, struct Computer * computer, const void * context, void (*completion)(const void * context, const char *, int) ) {
 	struct Packet temp;
 	struct Pool pool = createPool();
 	struct ContentBuffer contentBuffer;
 	
 	struct Buffer intermediateBuffer;
-	
+
+
 	contentBuffer.latestPosition = 0;
 	
 	int prevIndex = 0;
@@ -46,16 +46,18 @@ void observe(struct Socket socket, struct Computer computer, const void * contex
 }
 
 
-void recieveOnce(struct Socket socket, struct Computer computer, struct Packet * packet, struct Buffer * intermediateBuffer) {
+void recieveOnce(struct Socket * socket, struct Computer * computer, struct Packet * packet, struct Buffer * intermediateBuffer) {
 //	memset(GlobalPacketBuffer.data, 0, PACKET_SIZE * sizeof(char));
 	
 	socklen_t addr_len = sizeof(struct sockaddr);
 	long numbytes;
 	
-	if ((numbytes = recvfrom(socket.fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&computer.address, &addr_len)) < 0) {
+	if ((numbytes = recvfrom(socket->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&computer->address, &addr_len)) < 0) {
 		perror("recvfrom");
 		exit(1);
 	}
+
+	printf("GOT VAL\n");
 	intermediateBuffer->data[numbytes] = '\0';
 	
 	/*
@@ -63,9 +65,13 @@ void recieveOnce(struct Socket socket, struct Computer computer, struct Packet *
 	 */
 	
 	memmove(&(packet->index), intermediateBuffer->data, 1);
+	printf("GOT VAL\n");
 	memmove(&(packet->packetID), &(intermediateBuffer->data[1]), 2);
+	printf("GOT VAL2\n");
 	memmove(&(packet->completion), &(intermediateBuffer->data[3]), 1);
+	printf("GOT VAL3\n");
 	memmove(&(packet->data), &(intermediateBuffer->data[4]), numbytes - 4);
+	printf("GOT VAL4\n");
 	
 	packet->size = (int)(numbytes - 4);
 	

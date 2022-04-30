@@ -80,8 +80,6 @@ struct Pool {
 };
 
 
-
-
 /*
  MARK: -MUTATORS
  */
@@ -92,8 +90,16 @@ void joinFrame(struct ContentBuffer *, struct Frame *);
 /*
  MARK: -INITALISERS
  */
-struct Computer createComputer(const char *, int);
-struct Socket createSocket(void);
+struct Computer * createComputer(const char *, int);
+struct Computer * thisComputer(int port);
+struct Computer * anyComputer(void);
+
+struct Socket * createSocket(void);
+
 struct Pool createPool(void);
+
+void terminate(void *);
+
+void bindSocketToComputer(struct Socket *, struct Computer *);
 void createFrameInPlace(struct Frame *, struct Packet *);
 
