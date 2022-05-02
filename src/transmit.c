@@ -19,7 +19,6 @@ void transmitPacket(struct Socket * socket, struct Computer * computer, struct P
 	memmove(&(buffer[2]), &(packet->completion), 1);//moving id
 	memmove(&(buffer[3]), &(packet->data), packet->size );//moving id
 
-	printf("%i\n", packet->size);
 	if ((numbytes = (int)sendto(socket->fd, buffer, packet->size + 3, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
 		perror("sendto");
 		exit(1);
