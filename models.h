@@ -19,7 +19,7 @@ struct Packet {
 		struct {
 			PACKET_INDEX_TYPE index;
 			PACKET_ID_TYPE packetID;
-			char completion;
+			unsigned completion;
 			char data[PACKET_SIZE];
 		};
 

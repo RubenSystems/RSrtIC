@@ -8,7 +8,20 @@
 
 #include <stdio.h>
 #include "models.h"
+#include "clientmanager.h"
 
-void observe(struct Socket * socket, struct Computer * computer, const void *, void (*completion)(const void *, const char *, int) );
-void recieveOnce(struct Socket * socket, struct Computer * computer, struct Packet *, struct Buffer * intermediateBuffer);
 
+//First callback is for a new client, second callback is for a data recieve
+void observe(struct Socket *, struct Computer *, struct ClientManager *, void (*completion)(const char *, int) );
+
+// //This one provides context which is useful for callbacks which do not allow you to access outside scope
+// void observeWithContext(struct Socket *, struct Computer *, const void *, void (*completion)(const void *, const char *, int) );
+
+enum MessageTypes recieveOnce(struct Socket *, struct Computer *, struct Packet *, struct Buffer *);
+
+
+enum MessageTypes {
+	OPEN, 
+	PING,
+	DATA
+};
