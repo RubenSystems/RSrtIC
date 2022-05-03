@@ -18,7 +18,8 @@
 #include <netdb.h>
 
 
-void observe(struct Socket * socket, struct Computer * computer, struct ClientManager * clientManager, void (*completion)(const char *, int) ) {
+void observe(struct Socket * socket, struct ClientManager * clientManager, void (*completion)(const char *, int) ) {
+	struct Computer * computer = anyComputer();
 	struct Packet temp;
 	struct Pool pool = createPool();
 	struct ContentBuffer contentBuffer;
@@ -53,13 +54,13 @@ void observe(struct Socket * socket, struct Computer * computer, struct ClientMa
 	}
 }
 
-// void observeWithContext(struct Socket * socket, struct Computer * computer, const void * context, void (*completion)(const void * context, const char *, int) ) {
-// 	void callback(const char * data, int size) {
-// 		completion(context, data, size);
-// 	}
+void observeWithContext(struct Socket * socket, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
+	void callback(const char * data, int size) {
+		completion(context, data, size);
+	}
 
-// 	observe(socket, computer, callback);
-// }
+	observe(socket, manager, callback);
+}
 
 
 
