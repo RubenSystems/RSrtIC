@@ -13,4 +13,4 @@ char buffer [1500];
 
 void transmitPacket(struct Socket *, struct Computer *, struct Packet *);
 
-void transmit(struct Socket *, struct Computer *, char *, int);
+void transmit(struct Socket *, struct Computer *, const char *, int);

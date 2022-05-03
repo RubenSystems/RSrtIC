@@ -17,14 +17,14 @@
 struct Packet {
 	union {
 		struct {
-			PACKET_INDEX_TYPE index;
-			PACKET_ID_TYPE packetID;
-			unsigned completion;
-			char data[PACKET_SIZE];
+			PACKET_DATA_TYPE index;
+			PACKET_DATA_TYPE packetID;
+			PACKET_DATA_TYPE completion;
+			PACKET_DATA_TYPE data[PACKET_DATA_SIZE];
 		};
 
 		struct {
-			char rawdata[PACKET_SIZE];
+			PACKET_DATA_TYPE rawdata[PACKET_SIZE];
 		};
 	};
 
@@ -72,7 +72,7 @@ struct Frame {
 	///Indicates wether or not 
 	char ready;
 	
-	PACKET_ID_TYPE frameID;
+	PACKET_DATA_TYPE frameID;
 };
 
 struct Pool {
