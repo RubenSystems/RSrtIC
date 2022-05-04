@@ -12,7 +12,6 @@ char buffer [1500] = {0};
 
 void transmitData(struct Socket * socket, struct Computer * computer, const unsigned char * data, int numbytes) {
 	int sentbytes;
-	printf("SENDING");
 	if ((sentbytes = (int)sendto(socket->fd, data, numbytes, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
 		perror("sendto");
 		exit(1);

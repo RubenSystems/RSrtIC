@@ -46,7 +46,7 @@ void observeWithContext(struct Socket * socket, struct ClientManager * manager, 
 				index = insertPacketIntoPool(&pool, &temp);
 				if (index >= 0) {
 					joinFrame(&contentBuffer, &(pool.frames[index]));
-//					completion(context, contentBuffer.data, contentBuffer.latestPosition);
+					completion(context, contentBuffer.data, contentBuffer.latestPosition);
 					contentBuffer.latestPosition = 0;
 				}
 				break;
