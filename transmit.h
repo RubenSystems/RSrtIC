@@ -10,6 +10,7 @@
 char PACKET_ID_COUNTER;
 char buffer [1500];
 
+void transmitData(struct Socket *, struct Computer *, const unsigned char *, int);
 
 void transmitPacket(struct Socket *, struct Computer *, struct Packet *);
 

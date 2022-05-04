@@ -18,7 +18,8 @@
 #include <netdb.h>
 
 
-void observe(struct Socket * socket, struct ClientManager * clientManager, void (*completion)(const char *, int) ) {
+
+void observeWithContext(struct Socket * socket, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
 	struct Computer * computer = anyComputer();
 	struct Packet temp;
 	struct Pool pool = createPool();
@@ -35,18 +36,17 @@ void observe(struct Socket * socket, struct ClientManager * clientManager, void 
 	while (1) {
 		switch (recieveOnce(socket, computer, &temp, &intermediateBuffer)) {
 			case OPEN:
-				// HANDLE PING
-				addClient(clientManager, computer);
+				addClient(manager, computer);
 				break;
 			case PING:
 				// HANDLE PING
-				break; 
+				break;
 			case DATA:
 				prevIndex = temp.index;
 				index = insertPacketIntoPool(&pool, &temp);
 				if (index >= 0) {
 					joinFrame(&contentBuffer, &(pool.frames[index]));
-					completion(contentBuffer.data, contentBuffer.latestPosition);
+//					completion(context, contentBuffer.data, contentBuffer.latestPosition);
 					contentBuffer.latestPosition = 0;
 				}
 				break;
@@ -54,13 +54,10 @@ void observe(struct Socket * socket, struct ClientManager * clientManager, void 
 	}
 }
 
-void observeWithContext(struct Socket * socket, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
-	void callback(const char * data, int size) {
-		completion(context, data, size);
-	}
-
-	observe(socket, manager, callback);
+void observe(struct Socket * socket, struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
+	observeWithContext(socket, manager, 0, completion);
 }
+
 
 
 
@@ -90,11 +87,13 @@ enum MessageTypes recieveOnce(struct Socket * socket, struct Computer * computer
 	 This code is rubbish and only a fool would have written it.
 	 */
 	
-	memmove(&(packet->index), intermediateBuffer->data, 1);
-	memmove(&(packet->packetID), &(intermediateBuffer->data[1]), 1);
-	memmove(&(packet->completion), &(intermediateBuffer->data[2]), 1);
-	memmove(&(packet->data), &(intermediateBuffer->data[4]), numbytes - 3);
+	//	memmove(&(packet->index), intermediateBuffer->data, 1);
+	//	memmove(&(packet->packetID), &(intermediateBuffer->data[1]), 1);
+	//	memmove(&(packet->completion), &(intermediateBuffer->data[2]), 1);
+	//	memmove(&(packet->data), &(intermediateBuffer->data[4]), numbytes - 3);
 	
+	//	This is a lot better!
+	memmove(&(packet->rawdata), &(intermediateBuffer->data), numbytes);
 	packet->size = (int)(numbytes - 3);
 	return DATA;
 }
