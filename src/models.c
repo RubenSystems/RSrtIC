@@ -53,7 +53,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 			perror("talker: socket");
 			continue;
 		} else {
-			computer->address = *p;
+			computer->sendaddress = *p;
 			computer->fd = sockfd;
 			break;
 		}
@@ -99,7 +99,7 @@ struct Computer * thisComputer(const char * port) {
 			continue;
 		} else {
 			computer->fd = sockfd;
-			computer->address = *p;
+			computer->sendaddress = *p;
 			break;
 		}
 
@@ -117,7 +117,7 @@ struct Computer * thisComputer(const char * port) {
 
 struct Computer * anyComputer() {
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
-	memset(&computer->address, 0, sizeof(computer->address));
+	memset(&computer->sendaddress, 0, sizeof(computer->sendaddress));
 	if ((computer->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
 		perror("socket");
 		exit(1);

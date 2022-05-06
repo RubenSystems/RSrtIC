@@ -39,7 +39,8 @@ struct Packet {
 };
 
 struct Computer {
-	struct addrinfo address;
+	struct addrinfo sendaddress;
+	struct sockaddr_storage recvaddress;
 	int fd;
 };
 
