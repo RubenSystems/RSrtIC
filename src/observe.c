@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <time.h>
 
 
 
@@ -83,16 +84,7 @@ enum MessageTypes recieveOnce(struct Socket * socket, struct Computer * computer
 	} else if (strcmp(intermediateBuffer->data, pingString) == 0 ) {
 		return PING;
 	}
-	/*
-	 This code is rubbish and only a fool would have written it.
-	 */
-	
-	//	memmove(&(packet->index), intermediateBuffer->data, 1);
-	//	memmove(&(packet->packetID), &(intermediateBuffer->data[1]), 1);
-	//	memmove(&(packet->completion), &(intermediateBuffer->data[2]), 1);
-	//	memmove(&(packet->data), &(intermediateBuffer->data[4]), numbytes - 3);
-	
-	//	This is a lot better!
+
 	memmove(&(packet->rawdata), &(intermediateBuffer->data), numbytes);
 	packet->size = (int)(numbytes - 3);
 	return DATA;
