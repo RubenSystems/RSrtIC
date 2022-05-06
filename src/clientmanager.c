@@ -35,6 +35,7 @@ void addClient(struct ClientManager * manager, struct Computer * computer) {
 			return;
 		}
 	}
+	printf("[ERROR] - addClient: client pool is full.\n");
 }
 
 struct Computer * getClient(struct ClientManager * manager, int id) {
