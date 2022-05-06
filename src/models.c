@@ -37,28 +37,27 @@ struct Computer * createComputer(const char * ip, const char * port) {
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv, sockfd;
+	
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET; // set to AF_INET to use IPv4
+	hints.ai_socktype = SOCK_DGRAM;
+
 
 	if ((rv = getaddrinfo(ip, port, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return NULL;
 	}
 
-
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_DGRAM;
-
 	for(p = servinfo; p != NULL; p = p->ai_next) {
 		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
 			perror("talker: socket");
 			continue;
+		} else {
+			computer->address = *p;
+			computer->fd = sockfd;
+			break;
 		}
-
-		break;
 	}
-	computer->fd = sockfd;
-
-
 
 	return computer;
 }
@@ -68,7 +67,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 struct Computer * thisComputer(const char * port) {
 	printf("%s -- port \n", port);
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
-	int rv, sockfd, optval;
+	int rv, sockfd;
 	struct addrinfo hints, *servinfo, *p;
 
 	memset(&hints, 0, sizeof hints);
@@ -93,25 +92,24 @@ struct Computer * thisComputer(const char * port) {
 			continue;
 		}
 
-		// if((setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))) < 0) {
-		// 	perror("setsockopt");
-		// 	return 0;
-		// }
-		int bindval;
-		if ((bindval = bind(sockfd, p->ai_addr, p->ai_addrlen)) == -1) {
-			printf("bindval: %i\n", bindval);
+		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+			
 			close(sockfd);
 			perror("listener: bind");
 			continue;
+		} else {
+			computer->fd = sockfd;
+			computer->address = *p;
+			break;
 		}
 
-		break;
+		
 	}
 	if (p == NULL){
 		printf("FAILURE TO GET SOCKET\n");
 	}
 
-	computer->fd = sockfd;
+	
 
 	freeaddrinfo(servinfo);
 	return computer;

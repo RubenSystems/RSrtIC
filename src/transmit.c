@@ -11,10 +11,11 @@
 
 void transmitData(struct Computer * computer, const unsigned char * data, int numbytes) {
 	int sentbytes;
-	if ((sentbytes = (int)sendto(computer->fd, data, numbytes, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
+	if ((sentbytes = (int)sendto(computer->fd, data, numbytes, 0, computer->address.ai_addr, computer->address.ai_addrlen)) < 0) {
 		perror("sendto");
 		exit(1);
 	}
+	
 }
 
 void transmitPacket(struct Computer * computer, struct Packet * packet) {
