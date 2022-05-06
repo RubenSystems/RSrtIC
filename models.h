@@ -9,7 +9,9 @@
 
 #include "config.h"
 
-#include <netinet/in.h>
+// #include <sys/types.h>
+// #include <sys/socket.h>
+#include <netdb.h>
 
 /*
  MARK: - RAW DATA
@@ -37,12 +39,13 @@ struct Packet {
 };
 
 struct Computer {
-	struct sockaddr_in address;
-};
-
-struct Socket {
+	struct addrinfo address;
 	int fd;
 };
+
+// struct Socket {
+// 	int fd;
+// };
 
 /*
  MARK: - BUFFERS
@@ -90,8 +93,8 @@ void joinFrame(struct ContentBuffer *, struct Frame *);
 /*
  MARK: -INITALISERS
  */
-struct Computer * createComputer(const char *, int);
-struct Computer * thisComputer(int port);
+struct Computer * createComputer(const char *, const char *);
+struct Computer * thisComputer(const char * port);
 struct Computer * anyComputer(void);
 
 struct Socket * createSocket(void);
@@ -100,6 +103,6 @@ struct Pool createPool(void);
 
 void terminate(void *);
 
-void bindSocketToComputer(struct Socket *, struct Computer *);
+// void bindSocketToComputer(struct Socket *, struct Computer *);
 void createFrameInPlace(struct Frame *, struct Packet *);
 

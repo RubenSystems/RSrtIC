@@ -20,7 +20,7 @@
 
 
 
-void observeWithContext(struct Socket * socket, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
+void observeWithContext(struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
 	struct Computer * computer = anyComputer();
 	struct Packet temp;
 	struct Pool pool = createPool();
@@ -35,7 +35,7 @@ void observeWithContext(struct Socket * socket, struct ClientManager * manager, 
 	int index = 0;
 	
 	while (1) {
-		switch (recieveOnce(socket, computer, &temp, &intermediateBuffer)) {
+		switch (recieveOnce(computer, &temp, &intermediateBuffer)) {
 			case OPEN:
 				addClient(manager, computer);
 				break;
@@ -55,21 +55,21 @@ void observeWithContext(struct Socket * socket, struct ClientManager * manager, 
 	}
 }
 
-void observe(struct Socket * socket, struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
-	observeWithContext(socket, manager, 0, completion);
+void observe(struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
+	observeWithContext(manager, 0, completion);
 }
 
 
 
 
 //Will return 0 if it is a ping packet and 1 if it is a data packet 
-enum MessageTypes recieveOnce(struct Socket * socket, struct Computer * computer, struct Packet * packet, struct Buffer * intermediateBuffer) {
+enum MessageTypes recieveOnce( struct Computer * computer, struct Packet * packet, struct Buffer * intermediateBuffer) {
 //	memset(GlobalPacketBuffer.data, 0, PACKET_SIZE * sizeof(char));
 	
 	socklen_t addr_len = sizeof(struct sockaddr);
 	long numbytes;
 	
-	if ((numbytes = recvfrom(socket->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&computer->address, &addr_len)) < 0) {
+	if ((numbytes = recvfrom(computer->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&computer->address, &addr_len)) < 0) {
 		perror("recvfrom");
 		exit(1);
 	}
