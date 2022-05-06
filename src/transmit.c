@@ -7,25 +7,24 @@
 #include <stdio.h>
 #include <math.h>
 
-char PACKET_ID_COUNTER = 0;
-char buffer [1500] = {0};
 
-void transmitData(struct Socket * socket, struct Computer * computer, const unsigned char * data, int numbytes) {
+
+void transmitData(struct Computer * computer, const unsigned char * data, int numbytes) {
 	int sentbytes;
-	if ((sentbytes = (int)sendto(socket->fd, data, numbytes, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
+	if ((sentbytes = (int)sendto(computer->fd, data, numbytes, 0, (struct sockaddr *)&computer->address, sizeof(struct sockaddr))) < 0) {
 		perror("sendto");
 		exit(1);
 	}
 }
 
-void transmitPacket(struct Socket * socket, struct Computer * computer, struct Packet * packet) {
-	transmitData(socket, computer, packet->rawdata, packet->size + 3);
+void transmitPacket(struct Computer * computer, struct Packet * packet) {
+	transmitData(computer, packet->rawdata, packet->size + 3);
 }
 
-void transmit(struct Socket * socket, struct Computer * computer, const char * data, int size) {
-
+void transmit(struct Computer * computer, const char * data, int size) {
+	static char PACKET_ID_COUNTER = 0;
 	//Warning, you add three bytes on for the header!! this is just for the DATA payload
-	const int maxPacketSize = 1475;
+	const int maxPacketSize = 1000;
 	
 	PACKET_ID_COUNTER = (PACKET_ID_COUNTER + 1) % 255;
 
@@ -41,9 +40,6 @@ void transmit(struct Socket * socket, struct Computer * computer, const char * d
 		currentPacket.completion = (i == ceil(size / maxPacketSize)) ? 1 : 0;
 
 		memmove(&(currentPacket.data), &(data[i * maxPacketSize]), packetSize );
-		transmitPacket(socket, computer, &currentPacket);
-	}
-
-
-	
+		transmitPacket(computer, &currentPacket);
+	}	
 }

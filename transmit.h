@@ -7,11 +7,8 @@
 
 #include "models.h"
 
-char PACKET_ID_COUNTER;
-char buffer [1500];
+void transmitData(struct Computer *, const unsigned char *, int);
 
-void transmitData(struct Socket *, struct Computer *, const unsigned char *, int);
+void transmitPacket(struct Computer *, struct Packet *);
 
-void transmitPacket(struct Socket *, struct Computer *, struct Packet *);
-
-void transmit(struct Socket *, struct Computer *, const char *, int);
+void transmit(struct Computer *, const char *, int);
