@@ -27,23 +27,18 @@ void terminate(void * object) {
 /**
  * danger functions should be freed to avoid memory leaks
  */
-
 struct Computer * createComputer(const char * ip, const char * port) {
 	struct Computer* computer = (struct Computer *)malloc(sizeof(struct Computer));
-	// computer->address.sin_family = AF_INET;
-	// computer->address.sin_port = htons(port);
-	// computer->address.sin_addr = *((struct in_addr *)gethostbyname(ip)->h_addr);
-	// memset(&(computer->address.sin_zero), '\0', 8);
+
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv, sockfd;
 	
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET; // set to AF_INET to use IPv4
+	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 
-
-	if ((rv = getaddrinfo(ip, port, &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo("192.168.86.46", "8080", &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return NULL;
 	}
@@ -55,11 +50,10 @@ struct Computer * createComputer(const char * ip, const char * port) {
 		} else {
 			computer->sendaddress = *p;
 			computer->fd = sockfd;
-			break;
+			return computer;
 		}
 	}
-
-	return computer;
+	exit(0);
 }
 
 
