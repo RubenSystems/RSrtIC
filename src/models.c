@@ -109,13 +109,10 @@ struct Computer * thisComputer(const char * port) {
 	return computer;
 }
 
-struct Computer * anyComputer() {
+struct Computer * anyComputer(int fd) {
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
 	memset(&computer->sendaddress, 0, sizeof(computer->sendaddress));
-	if ((computer->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-		perror("socket");
-		exit(1);
-	}
+	computer->fd = fd;
 
 	return computer;
 }

@@ -96,7 +96,7 @@ void joinFrame(struct ContentBuffer *, struct Frame *);
  */
 struct Computer * createComputer(const char *, const char *);
 struct Computer * thisComputer(const char * port);
-struct Computer * anyComputer(void);
+struct Computer * anyComputer(int fd);
 
 struct Socket * createSocket(void);
 
