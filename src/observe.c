@@ -20,8 +20,8 @@
 
 
 
-void observeWithContext(struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
-	struct Computer * computer = anyComputer();
+void observeWithContext(struct Computer * fdComputer, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
+	struct Computer * computer = anyComputer(fdComputer->fd);
 	struct Packet temp;
 	struct Pool pool = createPool();
 	struct ContentBuffer contentBuffer;
@@ -55,8 +55,8 @@ void observeWithContext(struct ClientManager * manager, const void * context, vo
 	}
 }
 
-void observe(struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
-	observeWithContext(manager, 0, completion);
+void observe(struct Computer * computer, struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
+	observeWithContext(computer, manager, 0, completion);
 }
 
 
