@@ -39,9 +39,12 @@ struct Packet {
 };
 
 struct Computer {
-	struct addrinfo sendaddress;
-	struct sockaddr_storage recvaddress;
+	struct addrinfo address;
 	int fd;
+};
+
+struct Client {
+	struct sockaddr_storage address;
 };
 
 // struct Socket {
@@ -96,7 +99,7 @@ void joinFrame(struct ContentBuffer *, struct Frame *);
  */
 struct Computer * createComputer(const char *, const char *);
 struct Computer * thisComputer(const char * port);
-struct Computer * anyComputer(int fd);
+struct Client * anyClient(void);
 
 struct Socket * createSocket(void);
 

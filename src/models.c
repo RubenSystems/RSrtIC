@@ -38,7 +38,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 
-	if ((rv = getaddrinfo("192.168.86.46", "8080", &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(ip, port, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return NULL;
 	}
@@ -48,7 +48,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 			perror("talker: socket");
 			continue;
 		} else {
-			computer->sendaddress = *p;
+			computer->address = *p;
 			computer->fd = sockfd;
 			return computer;
 		}
@@ -93,7 +93,7 @@ struct Computer * thisComputer(const char * port) {
 			continue;
 		} else {
 			computer->fd = sockfd;
-			computer->sendaddress = *p;
+			computer->address = *p;
 			break;
 		}
 
@@ -109,10 +109,9 @@ struct Computer * thisComputer(const char * port) {
 	return computer;
 }
 
-struct Computer * anyComputer(int fd) {
-	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
-	memset(&computer->sendaddress, 0, sizeof(computer->sendaddress));
-	computer->fd = fd;
+struct Client * anyClient() {
+	struct Client * computer = (struct Client *)malloc(sizeof(struct Client));
+	memset(&computer->address, 0, sizeof(computer->address));
 
 	return computer;
 }
