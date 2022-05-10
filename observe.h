@@ -10,8 +10,6 @@
 #include "models.h"
 #include "clientmanager.h"
 
-
-//First callback is for a new client, second callback is for a data recieve
 void observe(
 			 struct Computer * computer,
 			 struct ClientManager *,
