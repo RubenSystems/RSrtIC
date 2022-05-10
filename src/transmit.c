@@ -35,7 +35,7 @@ void transmitPacket(struct Computer * computer, struct Computer * client, struct
 void transmit(struct Computer * computer, struct Computer * client, const char * data, int size) {
 	static char PACKET_ID_COUNTER = 0;
 	//Warning, you add three bytes on for the header!! this is just for the DATA payload
-	const int maxPacketSize = 1000;
+	const int maxPacketSize = 1420;
 	
 	PACKET_ID_COUNTER = (PACKET_ID_COUNTER + 1) % 255;
 

@@ -12,6 +12,7 @@
 // #include <sys/types.h>
 // #include <sys/socket.h>
 #include <netdb.h>
+#include <arpa/inet.h>
 
 /*
  MARK: - RAW DATA
@@ -46,6 +47,7 @@ struct Computer {
 	
 	int fd;
 	enum ClientType type;
+	char ip[INET6_ADDRSTRLEN];
 };
 
 
