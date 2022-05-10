@@ -10,11 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct ClientManager * createClientManager(int numberOfClients, void (*newclient)(struct Client *, int)) {
+struct ClientManager * createClientManager(int numberOfClients, void (*newclient)(struct Computer *, int)) {
 	struct ClientManager * manager = (struct ClientManager *)malloc(sizeof(struct ClientManager));
 
 	manager->numberOfClients = numberOfClients;
-	manager->clients = (struct Client **)calloc(numberOfClients, sizeof(struct Computer *));
+	manager->clients = (struct Computer **)calloc(numberOfClients, sizeof(struct Computer *));
 	// memset(manager->clients, 0, sizeof(struct Computer *) * numberOfClients);
 	manager->newclient = newclient;
 
@@ -27,7 +27,7 @@ void removeClient(struct ClientManager * manager, int id) {
 	manager->clients[id] = 0;
 }
 
-void addClient(struct ClientManager * manager, struct Client * computer) {
+void addClient(struct ClientManager * manager, struct Computer * computer) {
 	for(int i = 0; i < manager->numberOfClients; i ++) {
 		if (!manager->clients[i]) {
 			manager->clients[i] = computer;
@@ -38,6 +38,6 @@ void addClient(struct ClientManager * manager, struct Client * computer) {
 	printf("[ERROR] - addClient: client pool is full.\n");
 }
 
-struct Client * getClient(struct ClientManager * manager, int id) {
+struct Computer * getClient(struct ClientManager * manager, int id) {
 	return manager->clients[id];
 }

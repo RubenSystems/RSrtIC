@@ -29,7 +29,7 @@ void terminate(void * object) {
  */
 struct Computer * createComputer(const char * ip, const char * port) {
 	struct Computer* computer = (struct Computer *)malloc(sizeof(struct Computer));
-
+	computer->type = PRESET;
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv, sockfd;
@@ -59,8 +59,9 @@ struct Computer * createComputer(const char * ip, const char * port) {
 
 //Will bind the socket!!
 struct Computer * thisComputer(const char * port) {
-	printf("%s -- port \n", port);
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
+	computer->type = PRESET;
+	
 	int rv, sockfd;
 	struct addrinfo hints, *servinfo, *p;
 
@@ -102,30 +103,17 @@ struct Computer * thisComputer(const char * port) {
 	if (p == NULL){
 		printf("FAILURE TO GET SOCKET\n");
 	}
-
-	
-
 	freeaddrinfo(servinfo);
 	return computer;
 }
 
-struct Client * anyClient() {
-	struct Client * computer = (struct Client *)malloc(sizeof(struct Client));
+struct Computer * anyComputer() {
+	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
+	computer->type = INFERRED;
 	memset(&computer->address, 0, sizeof(computer->address));
 
 	return computer;
 }
-
-
-// struct Socket * createSocket(){
-// 	struct Socket * sock = (struct Socket *)malloc(sizeof(struct Socket));
-// 	if ((sock->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-// 		perror("socket");
-// 		exit(1);
-// 	}
-// 	return sock;
-// };
-
 
 
 void createFrameInPlace(struct Frame * frame, struct Packet * packet) {
@@ -142,20 +130,6 @@ struct Pool createPool() {
 	return pool;
 }
 
-// void bindSocketToComputer(struct Socket * socket, struct Computer * computer) {
-
-// 	int optval = 
-// 	if((setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))) < 0) {
-// 	  perror("setsockopt");
-// 	  return EXIT_FAILURE;
-// 	}
-
-
-// 	if ( bind(socket->fd, (const struct sockaddr *)&computer->address, sizeof(computer->address)) < 0 ) {
-// 		perror("bind failed");
-// 		exit(EXIT_FAILURE);
-// 	}
-// } 
 
 
 

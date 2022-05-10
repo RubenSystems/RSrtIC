@@ -28,7 +28,7 @@ void observeWithContext(
 
 enum MessageTypes recieveOnce(
 							  struct Computer *,
-							  struct Client *,
+							  struct Computer *,
 							  struct Packet *,
 							  struct Buffer *
 );

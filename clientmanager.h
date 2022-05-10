@@ -11,18 +11,18 @@
 
 
 struct ClientManager {
-	struct Client ** clients;
+	struct Computer ** clients;
 	int numberOfClients;
 
-	void (*newclient)(struct Client *, int);
+	void (*newclient)(struct Computer *, int);
 };
 
 //callback with the computer and the id you can easily reference the client to. 
-struct ClientManager * createClientManager(int, void (*newclient)(struct Client *, int));
+struct ClientManager * createClientManager(int, void (*newclient)(struct Computer *, int));
 
 void removeClient(struct ClientManager *, int);
 
-void addClient(struct ClientManager *, struct Client *);
+void addClient(struct ClientManager *, struct Computer *);
 
-struct Client * getClient(struct ClientManager * manager, int); 
+struct Computer * getClient(struct ClientManager * manager, int); 
 

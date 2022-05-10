@@ -29,23 +29,27 @@ struct Packet {
 			PACKET_DATA_TYPE rawdata[PACKET_SIZE];
 		};
 	};
-
-	
-	
 	//not a part of the payload
 	int size;
 
 
 };
 
-struct Computer {
-	struct addrinfo address;
-	int fd;
+enum ClientType {
+	INFERRED,
+	PRESET
 };
 
-struct Client {
-	struct sockaddr_storage address;
+struct Computer {
+	struct addrinfo address;
+	struct sockaddr_storage inferredaddress;
+	
+	int fd;
+	enum ClientType type;
 };
+
+
+
 
 // struct Socket {
 // 	int fd;
@@ -99,7 +103,7 @@ void joinFrame(struct ContentBuffer *, struct Frame *);
  */
 struct Computer * createComputer(const char *, const char *);
 struct Computer * thisComputer(const char * port);
-struct Client * anyClient(void);
+struct Computer * anyComputer(void);
 
 struct Socket * createSocket(void);
 
