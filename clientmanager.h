@@ -26,3 +26,6 @@ void addClient(struct ClientManager *, struct Computer *);
 
 struct Computer * getClient(struct ClientManager * manager, int); 
 
+
+//for converting sockaddr to ip. 
+void *get_in_addr(struct sockaddr *);
