@@ -12,5 +12,5 @@ RSrtIC is a library for realtime comunication between computers. An example appl
 **RSrtIC does not have gaurenteed delivery.**
 
 
-Since it is in c, it can be used in most environments. It has been used with Python using cTypes and Swift.
+Since it is in c, it can be used in most environments. It has been used with Python (using cTypes) and Swift.
 
