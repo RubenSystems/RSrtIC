@@ -21,7 +21,7 @@
 
 
 void observeWithContext(struct Computer * fdComputer, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
-	struct Computer * computer = anyComputer(fdComputer->fd);
+	struct Computer * client = anyComputer();
 	struct Packet temp;
 	struct Pool pool = createPool();
 	struct ContentBuffer contentBuffer;
@@ -35,9 +35,9 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 	int index = 0;
 	
 	while (1) {
-		switch (recieveOnce(computer, &temp, &intermediateBuffer)) {
+		switch (recieveOnce(fdComputer, client, &temp, &intermediateBuffer)) {
 			case OPEN:
-				addClient(manager, computer);
+				addClient(manager, client);
 				break;
 			case PING:
 				// HANDLE PING
@@ -61,15 +61,21 @@ void observe(struct Computer * computer, struct ClientManager * manager, void (*
 
 
 //Will return 0 if it is a ping packet and 1 if it is a data packet 
-enum MessageTypes recieveOnce( struct Computer * computer, struct Packet * packet, struct Buffer * intermediateBuffer) {
+enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * client, struct Packet * packet, struct Buffer * intermediateBuffer) {
 //	memset(GlobalPacketBuffer.data, 0, PACKET_SIZE * sizeof(char));
+	
+	struct sockaddr_in ;
 	
 	socklen_t addr_len = sizeof(struct sockaddr);
 	long numbytes;
-	if ((numbytes = recvfrom(computer->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&computer->recvaddress, &addr_len)) < 0) {
+	
+	if ((numbytes = recvfrom(computer->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&client->inferredaddress, &addr_len)) < 0) {
 		perror("recvfrom");
 		exit(1);
 	}
+	
+	
+	
 
 	
 	intermediateBuffer->data[numbytes] = '\0';

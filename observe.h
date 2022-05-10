@@ -12,12 +12,26 @@
 
 
 //First callback is for a new client, second callback is for a data recieve
-void observe(struct Computer * computer, struct ClientManager *, void (*completion)(const void *, const char *, int));
+void observe(
+			 struct Computer * computer,
+			 struct ClientManager *,
+			 void (*completion)(const void *, const char *, int)
+);
 
 // //This one provides context which is useful for callbacks which do not allow you to access outside scope
-void observeWithContext(struct Computer * computer, struct ClientManager *, const void *, void (*completion)(const void *, const char *, int));
+void observeWithContext(
+						struct Computer * computer,
+						struct ClientManager *,
+						const void *,
+						void (*completion)(const void *, const char *, int)
+);
 
-enum MessageTypes recieveOnce(struct Computer *, struct Packet *, struct Buffer *);
+enum MessageTypes recieveOnce(
+							  struct Computer *,
+							  struct Computer *,
+							  struct Packet *,
+							  struct Buffer *
+);
 
 
 enum MessageTypes {

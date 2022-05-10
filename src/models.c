@@ -29,7 +29,7 @@ void terminate(void * object) {
  */
 struct Computer * createComputer(const char * ip, const char * port) {
 	struct Computer* computer = (struct Computer *)malloc(sizeof(struct Computer));
-
+	computer->type = PRESET;
 
 	struct addrinfo hints, *servinfo, *p;
 	int rv, sockfd;
@@ -38,7 +38,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 
-	if ((rv = getaddrinfo("192.168.86.46", "8080", &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(ip, port, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return NULL;
 	}
@@ -48,7 +48,7 @@ struct Computer * createComputer(const char * ip, const char * port) {
 			perror("talker: socket");
 			continue;
 		} else {
-			computer->sendaddress = *p;
+			computer->address = *p;
 			computer->fd = sockfd;
 			return computer;
 		}
@@ -59,8 +59,9 @@ struct Computer * createComputer(const char * ip, const char * port) {
 
 //Will bind the socket!!
 struct Computer * thisComputer(const char * port) {
-	printf("%s -- port \n", port);
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
+	computer->type = PRESET;
+	
 	int rv, sockfd;
 	struct addrinfo hints, *servinfo, *p;
 
@@ -93,7 +94,7 @@ struct Computer * thisComputer(const char * port) {
 			continue;
 		} else {
 			computer->fd = sockfd;
-			computer->sendaddress = *p;
+			computer->address = *p;
 			break;
 		}
 
@@ -102,31 +103,17 @@ struct Computer * thisComputer(const char * port) {
 	if (p == NULL){
 		printf("FAILURE TO GET SOCKET\n");
 	}
-
-	
-
 	freeaddrinfo(servinfo);
 	return computer;
 }
 
-struct Computer * anyComputer(int fd) {
+struct Computer * anyComputer() {
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
-	memset(&computer->sendaddress, 0, sizeof(computer->sendaddress));
-	computer->fd = fd;
+	computer->type = INFERRED;
+	memset(&computer->address, 0, sizeof(computer->address));
 
 	return computer;
 }
-
-
-// struct Socket * createSocket(){
-// 	struct Socket * sock = (struct Socket *)malloc(sizeof(struct Socket));
-// 	if ((sock->fd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-// 		perror("socket");
-// 		exit(1);
-// 	}
-// 	return sock;
-// };
-
 
 
 void createFrameInPlace(struct Frame * frame, struct Packet * packet) {
@@ -143,20 +130,6 @@ struct Pool createPool() {
 	return pool;
 }
 
-// void bindSocketToComputer(struct Socket * socket, struct Computer * computer) {
-
-// 	int optval = 
-// 	if((setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval))) < 0) {
-// 	  perror("setsockopt");
-// 	  return EXIT_FAILURE;
-// 	}
-
-
-// 	if ( bind(socket->fd, (const struct sockaddr *)&computer->address, sizeof(computer->address)) < 0 ) {
-// 		perror("bind failed");
-// 		exit(EXIT_FAILURE);
-// 	}
-// } 
 
 
 
