@@ -21,9 +21,15 @@ void transmitPacket(
 					struct Packet *
 );
 
-void transmit(
+enum TransmitResponses transmit(
 			  struct Computer *,
 			  struct Computer *,
 			  const char *,
 			  int
 );
+
+enum TransmitResponses {
+	SUCCESS = 0, 
+	EVICT = -2, 
+	FAIL = -1
+};

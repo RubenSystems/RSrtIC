@@ -110,6 +110,8 @@ struct Computer * thisComputer(const char * port) {
 struct Computer * anyComputer() {
 	struct Computer * computer = (struct Computer *)malloc(sizeof(struct Computer));
 	computer->type = INFERRED;
+	computer->timeout = 50;
+	printf("%i\n", computer->timeout);
 	memset(&computer->address, 0, sizeof(computer->address));
 
 	return computer;
