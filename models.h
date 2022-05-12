@@ -47,7 +47,10 @@ struct Computer {
 	
 	int fd;
 	enum ClientType type;
-	char ip[INET6_ADDRSTRLEN];
+	int timeout;
+	char ip[INET6_ADDRSTRLEN + 1];
+
+	
 };
 
 

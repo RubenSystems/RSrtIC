@@ -28,16 +28,26 @@ void transmitData(struct Computer * computer, struct Computer * client, const un
 	
 }
 
+
 void transmitPacket(struct Computer * computer, struct Computer * client, struct Packet * packet) {
 	transmitData(computer, client, packet->rawdata, packet->size + 3);
 }
 
-void transmit(struct Computer * computer, struct Computer * client, const char * data, int size) {
+
+enum TransmitResponses transmit(struct Computer * computer, struct Computer * client, const char * data, int size) {
 	static char PACKET_ID_COUNTER = 0;
 	//Warning, you add three bytes on for the header!! this is just for the DATA payload
 	const int maxPacketSize = 1420;
+
+	if (--client->timeout <= 0) {
+		return EVICT;
+	}
+	printf("%s %i \n", client->ip, client->timeout);
 	
-	PACKET_ID_COUNTER = (PACKET_ID_COUNTER + 1) % 255;
+	PACKET_ID_COUNTER = (++PACKET_ID_COUNTER) % 255;
+	if (PACKET_ID_COUNTER == 0) {
+		PACKET_ID_COUNTER ++;
+	}
 
 	//Copy to prevent conflicts between two different clients
 	int currentPacketID = PACKET_ID_COUNTER;
@@ -48,9 +58,11 @@ void transmit(struct Computer * computer, struct Computer * client, const char *
 		currentPacket.index = i;
 		currentPacket.packetID = currentPacketID;
 		currentPacket.size = packetSize;
+
 		currentPacket.completion = (i == ceil(size / maxPacketSize)) ? 1 : 0;
 
 		memmove(&(currentPacket.data), &(data[i * maxPacketSize]), packetSize );
 		transmitPacket(computer, client, &currentPacket);
 	}	
+	return SUCCESS;
 }
