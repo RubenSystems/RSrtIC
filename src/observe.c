@@ -6,7 +6,7 @@
 //
 
 #include "../observe.h"
-
+#include "../transmit.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -33,6 +33,7 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 	
 	int prevIndex = 0;
 	int index = 0;
+	int sendIndex = 0;
 	
 	while (1) {
 		switch (recieveOnce(fdComputer, client, &temp, &intermediateBuffer)) {
@@ -51,6 +52,10 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 					contentBuffer.latestPosition = 0;
 				}
 				break;
+		}
+		if (sendIndex ++ == PING_AFTER) {
+			transmitData(fdComputer, fdComputer, (const unsigned char *)PING_MESSAGE, strlen(PING_MESSAGE));
+			sendIndex = 0;
 		}
 	}
 }
@@ -74,17 +79,12 @@ enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * clie
 		exit(1);
 	}
 	
-	
-	
-
-	
 	intermediateBuffer->data[numbytes] = '\0';
 
-	const char * openString = "open";
-	const char * pingString = "ping";
-	if (strcmp(intermediateBuffer->data, openString) == 0 ) {
+
+	if (strcmp(intermediateBuffer->data, OPEN_MESSAGE) == 0 ) {
 		return OPEN;
-	} else if (strcmp(intermediateBuffer->data, pingString) == 0 ) {
+	} else if (strcmp(intermediateBuffer->data, PING_MESSAGE) == 0 ) {
 		return PING;
 	}
 
