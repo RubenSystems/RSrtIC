@@ -79,7 +79,6 @@ enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * clie
 		exit(1);
 	}
 	
-	
 	intermediateBuffer->data[numbytes] = '\0';
 
 

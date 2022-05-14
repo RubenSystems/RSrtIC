@@ -38,7 +38,6 @@ void * get_in_addr(struct sockaddr* sa) {
 void addClient(struct ClientManager * manager, struct Computer * computer) {
 
 	inet_ntop(computer->inferredaddress.ss_family, get_in_addr((struct sockaddr *)&computer->inferredaddress), computer->ip, INET6_ADDRSTRLEN);
-	computer->ip[INET6_ADDRSTRLEN + 1] = '\0';
 	computer->timeout = TIMEOUT_AFTER;
 	
 	int firstEmptyIndex = -1;
