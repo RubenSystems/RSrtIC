@@ -44,7 +44,7 @@ enum TransmitResponses transmit(struct Computer * computer, struct Computer * cl
 	}
 	printf("%s %i \n", client->ip, client->timeout);
 	
-	PACKET_ID_COUNTER = (++PACKET_ID_COUNTER) % 255;
+	PACKET_ID_COUNTER = (PACKET_ID_COUNTER + 1) % 255;
 	if (PACKET_ID_COUNTER == 0) {
 		PACKET_ID_COUNTER ++;
 	}

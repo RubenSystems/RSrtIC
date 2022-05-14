@@ -22,4 +22,7 @@
 #define MAX_CONTENT_SIZE PACKET_SIZE * MAX_PACKET_NO
 #define FRAME_POOL_SIZE 5
 
+#define OPEN_MESSAGE "open"
+#define PING_MESSAGE "ping"
+
 #endif /* config_h */
