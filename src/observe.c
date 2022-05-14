@@ -40,7 +40,7 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 				addClient(manager, client);
 				break;
 			case PING:
-				// HANDLE PING
+				addClient(manager, client);
 				break;
 			case DATA:
 				prevIndex = temp.index;
@@ -74,9 +74,6 @@ enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * clie
 		exit(1);
 	}
 	
-	
-	
-
 	
 	intermediateBuffer->data[numbytes] = '\0';
 
