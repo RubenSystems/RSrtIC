@@ -35,6 +35,7 @@ void * get_in_addr(struct sockaddr* sa) {
 }
 
 
+//Will not malloc if the client is there. 
 void addClient(struct ClientManager * manager, struct Computer * computer) {
 
 	inet_ntop(computer->inferredaddress.ss_family, get_in_addr((struct sockaddr *)&computer->inferredaddress), computer->ip, INET6_ADDRSTRLEN);
@@ -46,7 +47,6 @@ void addClient(struct ClientManager * manager, struct Computer * computer) {
 			firstEmptyIndex = i;
 		} else if (manager->clients[i] && strcmp(manager->clients[i]->ip, computer->ip) == 0) {
 			memcpy(manager->clients[i], computer, sizeof(struct Computer));
-			printf("[UPDATE] - updating client %s\n", computer->ip);
 			return;
 		}
 	}

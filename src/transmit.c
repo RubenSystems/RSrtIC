@@ -37,12 +37,10 @@ void transmitPacket(struct Computer * computer, struct Computer * client, struct
 enum TransmitResponses transmit(struct Computer * computer, struct Computer * client, const char * data, int size) {
 	static char PACKET_ID_COUNTER = 0;
 	//Warning, you add three bytes on for the header!! this is just for the DATA payload
-	const int maxPacketSize = 1420;
 
 	if (--client->timeout <= 0) {
 		return EVICT;
 	}
-	printf("%s %i \n", client->ip, client->timeout);
 	
 	PACKET_ID_COUNTER = (PACKET_ID_COUNTER + 1) % 255;
 	if (PACKET_ID_COUNTER == 0) {
@@ -52,16 +50,16 @@ enum TransmitResponses transmit(struct Computer * computer, struct Computer * cl
 	//Copy to prevent conflicts between two different clients
 	int currentPacketID = PACKET_ID_COUNTER;
 	
-	for (int i = 0; i < ceil(size / maxPacketSize) + 1; i ++) {
+	for (int i = 0; i < ceil(size / MAX_PACKET_DATA_SIZE) + 1; i ++) {
 		struct Packet currentPacket;
-		int packetSize = maxPacketSize * (i + 1) < size ? maxPacketSize : size - ((maxPacketSize) * i);
+		int packetSize = MAX_PACKET_DATA_SIZE * (i + 1) < size ? MAX_PACKET_DATA_SIZE : size - ((MAX_PACKET_DATA_SIZE) * i);
 		currentPacket.index = i;
 		currentPacket.packetID = currentPacketID;
 		currentPacket.size = packetSize;
 
-		currentPacket.completion = (i == ceil(size / maxPacketSize)) ? 1 : 0;
+		currentPacket.completion = (i == ceil(size / MAX_PACKET_DATA_SIZE)) ? 1 : 0;
 
-		memmove(&(currentPacket.data), &(data[i * maxPacketSize]), packetSize );
+		memmove(&(currentPacket.data), &(data[i * MAX_PACKET_DATA_SIZE]), packetSize );
 		transmitPacket(computer, client, &currentPacket);
 	}	
 	return SUCCESS;

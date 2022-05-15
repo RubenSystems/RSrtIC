@@ -17,10 +17,9 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <time.h>
+#include <poll.h>
 
-
-
-void observeWithContext(struct Computer * fdComputer, struct ClientManager * manager, const void * context, void (*completion)(const void * context, const char *, int) ) {
+void observeWithContext(struct Computer * fdComputer, struct ClientManager * manager, enum ComputerType type, const void * context, void (*completion)(const void * context, const char *, int) ) {
 	struct Computer * client = anyComputer();
 	struct Packet temp;
 	struct Pool pool = createPool();
@@ -36,7 +35,7 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 	int sendIndex = 0;
 	
 	while (1) {
-		switch (recieveOnce(fdComputer, client, &temp, &intermediateBuffer)) {
+		switch (recieveOnce(fdComputer, client, type, &temp, &intermediateBuffer)) {
 			case OPEN:
 				addClient(manager, client);
 				break;
@@ -52,30 +51,46 @@ void observeWithContext(struct Computer * fdComputer, struct ClientManager * man
 					contentBuffer.latestPosition = 0;
 				}
 				break;
+			case TIMEOUT:
+				if (type == CLIENT) {
+					transmitData(fdComputer, fdComputer, (const unsigned char *)OPEN_MESSAGE, strlen(OPEN_MESSAGE));
+				}
+				break;
 		}
-		if (sendIndex ++ == PING_AFTER) {
+		if (type == CLIENT && sendIndex ++ == PING_AFTER) {
 			transmitData(fdComputer, fdComputer, (const unsigned char *)PING_MESSAGE, strlen(PING_MESSAGE));
 			sendIndex = 0;
 		}
 	}
 }
 
-void observe(struct Computer * computer, struct ClientManager * manager, void (*completion)(const void * context, const char *, int) ) {
-	observeWithContext(computer, manager, 0, completion);
+void observe(struct Computer * computer, struct ClientManager * manager, enum ComputerType type, void (*completion)(const void * context, const char *, int) ) {
+	observeWithContext(computer, manager, type, 0, completion);
 }
 
 
 //Will return 0 if it is a ping packet and 1 if it is a data packet 
-enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * client, struct Packet * packet, struct Buffer * intermediateBuffer) {
+enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * client, enum ComputerType type, struct Packet * packet, struct Buffer * intermediateBuffer) {
 //	memset(GlobalPacketBuffer.data, 0, PACKET_SIZE * sizeof(char));
 	
-	struct sockaddr_in ;
+
 	
 	socklen_t addr_len = sizeof(struct sockaddr);
 	long numbytes;
 	
+	if (type == CLIENT) {
+		fd_set readfds;
+		struct timeval timeout = { .tv_sec = 1 };
+		FD_ZERO(&readfds);
+		FD_SET(computer->fd, &readfds);
+		select(computer->fd + 1, &readfds, NULL, NULL, &timeout);
+		if (!FD_ISSET(computer->fd, &readfds)) {
+			return TIMEOUT;
+		}
+	}
+		
 	if ((numbytes = recvfrom(computer->fd, intermediateBuffer->data, PACKET_SIZE , 0, (struct sockaddr *)&client->inferredaddress, &addr_len)) < 0) {
-		perror("recvfrom");
+		perror("recv");
 		exit(1);
 	}
 	
@@ -92,3 +107,5 @@ enum MessageTypes recieveOnce(struct Computer * computer, struct Computer * clie
 	packet->size = (int)(numbytes - 3);
 	return DATA;
 }
+
+

@@ -10,9 +10,24 @@
 #include "models.h"
 #include "clientmanager.h"
 
+
+enum ComputerType {
+	CLIENT,
+	SERVER
+};
+
+
+enum MessageTypes {
+	OPEN,
+	PING,
+	DATA,
+	TIMEOUT
+};
+
 void observe(
 			 struct Computer * computer,
 			 struct ClientManager *,
+			 enum ComputerType,
 			 void (*completion)(const void *, const char *, int)
 );
 
@@ -20,6 +35,7 @@ void observe(
 void observeWithContext(
 						struct Computer * computer,
 						struct ClientManager *,
+						enum ComputerType,
 						const void *,
 						void (*completion)(const void *, const char *, int)
 );
@@ -27,13 +43,10 @@ void observeWithContext(
 enum MessageTypes recieveOnce(
 							  struct Computer *,
 							  struct Computer *,
+							  enum ComputerType, 
 							  struct Packet *,
 							  struct Buffer *
 );
 
 
-enum MessageTypes {
-	OPEN, 
-	PING,
-	DATA
-};
+
