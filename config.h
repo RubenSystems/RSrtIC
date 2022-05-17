@@ -16,7 +16,7 @@
 #define MAX_PACKET_DATA_SIZE 1420
 
 #define TIMEOUT_AFTER 200
-#define PING_AFTER 100
+#define PING_AFTER 500
 
 
 #define MAX_PACKET_NO 200
