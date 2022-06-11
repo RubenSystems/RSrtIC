@@ -30,7 +30,7 @@ The data sent is called a "frame". A frame is split into packets in order to be 
 Each packet consists of 
 
 byte: 
-	1: index (the index in the packet)
-	2: id (the id of the frame)
-	3: completion (if the packet is the last one in the frame)
-	4...end: data.  
+- 1: index (the index in the packet)
+- 2: id (the id of the frame)
+- 3: completion (if the packet is the last one in the frame)
+- 4...end: data.  
